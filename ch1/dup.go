@@ -2,6 +2,7 @@
 @Time : 2019-03-24 08:48 
 @Author : zhangjun
 @File : dup
+@Description:统计空行
 */
 package main
 
@@ -10,7 +11,7 @@ import (
 	"fmt"
 	"os"
 )
-//go run dump.go test_dup.txt
+//go run dup.go test_dup.txt
 
 func main() {
 	counts := make(map[string]int)
@@ -28,9 +29,11 @@ func main() {
 		}
 	}
 	for line, n := range counts {
-		if n>1 {
-			fmt.Printf("%d\t%s\n", n, line)
-		}
+		//if n>1 {
+		//	fmt.Printf("%d\t%s\n", n, line)
+		//}
+		fmt.Printf("%d\t%s\n", n, line)
+
 	}
 }
 func countLines(f *os.File, counts map[string]int) {
