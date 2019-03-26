@@ -11,6 +11,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 )
 
 //先读入文件
@@ -42,16 +43,17 @@ func main() {
 		go setWordNumToCh(word, num , ch )
 		getWordNumFromCh(ch)
 	}
-	fmt.Printf("单词【%d 】个\n", sum)
 
+	fmt.Printf("单词【%d 】个\n", sum)
 }
 
 func countWordNum(word string, counts map[string]int) {
+	word = strings.ToLower(word)
 	counts[word]++
 }
 
 func setWordNumToCh(word string, num int, ch chan string){
-	ch <- fmt.Sprintf("单词【%s 出现了【%d】次\n", word, num)
+	ch <- fmt.Sprintf("单词【%s】出现了【%d】次\n", word, num)
 }
 
 func getWordNumFromCh(ch chan string){
