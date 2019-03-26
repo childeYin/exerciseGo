@@ -16,7 +16,7 @@ import (
 //先读入文件
 //按单词扫描
 
-var sum int
+var sum = 0
 func main() {
 	files := os.Args[1:]
 	counts := make(map[string]int)
@@ -33,18 +33,14 @@ func main() {
 			countWordNum(word, counts)
 		}
 	}
-	//for word, num := range counts {
-	//	fmt.Printf("单词【%s 出现了【%d】次\n", word, num)
-	//}
-	for word, num := range counts {
-		go setWordNumToCh(word , num , ch )
-	}
 
-	for range <-ch {
-		fmt.Printf(<-ch)
+	for word, num := range counts {
+		sum += num
+		go setWordNumToCh(word, num , ch )
+		getWordNumFromCh(ch)
 	}
-	fmt.Printf("sum == %d\n",sum)
-	fmt.Printf("chan length noread == %d",len(ch))
+	fmt.Printf("单词【%d 】个\n", sum)
+
 }
 
 func countWordNum(word string, counts map[string]int) {
@@ -52,6 +48,9 @@ func countWordNum(word string, counts map[string]int) {
 }
 
 func setWordNumToCh(word string, num int, ch chan string){
-	sum += num
 	ch <- fmt.Sprintf("单词【%s 出现了【%d】次\n", word, num)
+}
+
+func getWordNumFromCh(ch chan string){
+	fmt.Printf(<-ch)
 }
