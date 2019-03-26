@@ -15,7 +15,10 @@ import (
 
 //先读入文件
 //按单词扫描
-
+/**
+ * map 协程下使用会报错，concurrent map iteration and map write，注意加锁
+ * 单goroutines，死锁问题 all goroutines are asleep - deadlock!
+ */
 var sum = 0
 func main() {
 	files := os.Args[1:]
