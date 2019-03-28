@@ -21,10 +21,11 @@ import (
  * 单goroutines，死锁问题 all goroutines are asleep - deadlock!
  */
 var sum = 0
+var ch = make(chan string)
+
 func main() {
 	files := os.Args[1:]
 	counts := make(map[string]int)
-	ch := make(chan string)
 	for _, file := range files {
 		f, err := os.Open(file)
 		if err == nil {
@@ -38,13 +39,16 @@ func main() {
 		}
 	}
 
-	for word, num := range counts {
-		sum += num
-		go setWordNumToCh(word, num , ch )
-		getWordNumFromCh(ch)
-	}
+	go func() {
+		for word, num := range counts {
+			sum += num
+			setWordNumToCh(word, num )
+		}
+		close(ch)
+	}()
 
-	fmt.Printf("单词【%d 】个\n", sum)
+	getWordNumFromCh();
+	fmt.Printf("单词【%d】个\n", sum)
 }
 
 func countWordNum(word string, counts map[string]int) {
@@ -52,10 +56,12 @@ func countWordNum(word string, counts map[string]int) {
 	counts[word]++
 }
 
-func setWordNumToCh(word string, num int, ch chan string){
+func setWordNumToCh(word string, num int){
 	ch <- fmt.Sprintf("单词【%s】出现了【%d】次\n", word, num)
 }
 
-func getWordNumFromCh(ch chan string){
-	fmt.Printf(<-ch)
+func getWordNumFromCh() {
+	for data := range ch {
+		fmt.Println(data)
+	}
 }
